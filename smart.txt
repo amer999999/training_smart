@@ -1,4 +1,5 @@
 scaffold:
 /home/odoo/workspace/Odoo_17/venv_17/bin/python ./odoo-bin scaffold real_estate /home/odoo/workspace/Odoo_17/my_adds
 
-1
+
+adding new line
