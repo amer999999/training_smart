@@ -18,7 +18,7 @@ root: dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
 root: apt install --fix-broken –y
 root: wkhtmltopdf –version
 
-su – postgres
+sudo su postgres
 createuser -s odoo
 psql
 alter role odoo with password 'odoo';
@@ -35,7 +35,7 @@ apt install npm -y
 npm install -g less-plugin-clean-css
 npm list -g --depth 0
 npm install -g rtlcss@2.6.1
-npm install -g rtl-detect npm install -g postcss-ltr-rtl-detect
+npm install -g rtl-detect npm install -g postcss-ltr-rtl-detect
 
 
 [options]
