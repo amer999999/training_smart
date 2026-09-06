@@ -9,38 +9,91 @@ Merge a branch into current	git merge branch-name
 Undo last commit (keep changes)	git reset --soft HEAD~1
 Undo last commit (delete changes)	git reset --hard HEAD~1
 
-
-
 sudo apt update && sudo apt upgrade -y
 
-sudo apt install git python3-pip python3-dev python3-venv libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev \
-    libtiff5-dev libjpeg8-dev libopenjp2-7-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev \
-    libharfbuzz-dev libfribidi-dev libxcb1-dev libpq-dev postgresql -y
+sudo apt install git wget nodejs npm python3 build-essential libzip-dev python3-dev
+libxslt1-dev python3-pip libldap2-dev python3-wheel libsasl2-dev python3-venv
+python3-setuptools node-less libjpeg-dev xfonts-75dpi xfonts-base libpq-dev libffi-
+dev fontconfig libxml2-dev libssl-dev libxslt-dev postgresql –y
 
-wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb
-sudo apt install ./wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+root: wget
+https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkht
+mltox_0.12.5-1.bionic_amd64.deb
+root: dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
+root: apt install --fix-broken –y
+root: wkhtmltopdf –version
 
-sudo -u postgres createuser --createdb --username postgres --no-createrole --no-superuser --pwprompt odoo
+su – postgres
+createuser -s odoo
+psql
+alter role odoo with password 'odoo';
 
-mkdir -p /opt/odoo/odoo17
-git clone https://github.com/odoo/odoo.git --depth 1 --branch 17.0 /opt/odoo/odoo17
+git clone https://www.github.com/odoo/odoo --depth=1 --branch=17.0 --single-
+branch
 
-python3 -m venv /opt/odoo/odoo17-venv
-source /opt/odoo/odoo17-venv/bin/activate
-pip install -r /opt/odoo/odoo17/requirements.txt
+python3 -m venv venv_17
+source venv_17/bin/activate
+pip3 install -r requirements.txt
+deactivate
+
+apt install npm -y
+npm install -g less-plugin-clean-css
+npm list -g --depth 0
+npm install -g rtlcss@2.6.1
+npm install -g rtl-detect npm install -g postcss-ltr-rtl-detect
+
 
 [options]
-; Database settings
-db_host = localhost
-db_port = 5432
-db_user = odoo
-db_password = your_secure_password
+addons_path = /home/odoo/workspace/Odoo_17/odoo/addons,/home/odoo/workspace/Odoo_17/my_adds/real_estate_project
 
-; Addons path
-addons_path = /opt/odoo/odoo17/addons,/opt/odoo/custom_addons
-
-; Logs
-logfile = /var/log/odoo/odoo-server.log
+admin_passwd = a
+xmlrpc_port = 8017
+longpolling_port = 7017
+limit_time_cpu = 180000
+limit_time_real = 360000
+log_db_level = debug
+log_db = True
+# log_db_level = error
+# log_handler = :DEBUG
+# log_handler = :INFO
+# log_handler = :ERROR
+# log_level = info
+log_level = info
+log_handler = odoo.addons.license_verifier:DEBUG
+# log_level = warn
+# log_level = error
+logfile = /home/odoo/workspace/Odoo_17/Odoo_17.log
+csv_internal_sep = ,
+data_dir = /home/odoo/.local/share/Odoo
+db_host = False
+db_maxconn = 64
+db_name =
+db_password = False
+db_port = False
+db_sslmode = prefer
+db_template = template0
+db_user = False
+dbfilter =
+# demo = {}
+dev = all
+http_interface =
+http_port = 8017
+import_partial =
+limit_memory_hard = 2684354560
+limit_memory_soft = 2147483648
+limit_request = 8192
+limit_time_real_cron = -1
+list_db = True
+max_cron_threads = 2
+proxy_mode = False
+server_wide_modules = base,web
+test_enable = False
+test_file =
+test_tags = None
+transient_age_limit = 1.0
+translate_modules = ['all']
+without_demo = True
+workers = 0
 
 # .gitignore
 __pycache__/
