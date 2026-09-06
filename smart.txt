@@ -42,4 +42,4 @@ addons_path = /opt/odoo/odoo17/addons,/opt/odoo/custom_addons
 ; Logs
 logfile = /var/log/odoo/odoo-server.log
 
-
+22222222222222
