@@ -28,7 +28,7 @@ branch
 
 python3 -m venv venv_17
 source venv_17/bin/activate
-pip3 install -r requirements.txt
+pip3 install -r odoo/requirements.txt
 deactivate
 
 apt install npm -y
