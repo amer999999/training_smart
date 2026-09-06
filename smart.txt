@@ -11,10 +11,7 @@ Undo last commit (delete changes)	git reset --hard HEAD~1
 
 sudo apt update && sudo apt upgrade -y
 
-sudo apt install git wget nodejs npm python3 build-essential libzip-dev python3-dev
-libxslt1-dev python3-pip libldap2-dev python3-wheel libsasl2-dev python3-venv
-python3-setuptools node-less libjpeg-dev xfonts-75dpi xfonts-base libpq-dev libffi-
-dev fontconfig libxml2-dev libssl-dev libxslt-dev postgresql –y
+sudo apt install git wget nodejs npm python3 build-essential libzip-dev python3-dev libxslt1-dev python3-pip libldap2-dev python3-wheel libsasl2-dev python3-venv python3-setuptools node-less libjpeg-dev xfonts-75dpi xfonts-base libpq-dev libffi-dev fontconfig libxml2-dev libssl-dev libxslt-dev postgresql –y
 
 root: wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
 root: dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
