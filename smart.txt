@@ -1,5 +1,5 @@
 scaffold:
-/home/odoo/workspace/Odoo_17/venv_17/bin/python ./odoo-bin scaffold real_estate /home/odoo/workspace/Odoo_17/my_adds
+/home/odoo/workspace/Odoo_17/venv_17/bin/python ./odoo-bin scaffold real_estate /home/odoo/workspace/Odoo_17/my_adds/real_estate_project
 
 Check status of files	git status
 See history of commits	git log
