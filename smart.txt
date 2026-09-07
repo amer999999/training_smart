@@ -101,3 +101,22 @@ venv/
 .vscode/
 odoo.conf  # Never commit: contains your DB password
 .DS_Store
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Odoo Run",
+            "type": "python",
+            "request": "launch",
+            "python": "/home/odoo/workspace/Odoo_17/venv/bin/python",
+            "cwd": "${workspaceFolder}",
+            "program": "${cwd}/odoo/odoo-bin",
+            "args": ["-c", "${cwd}/Odoo_17.conf", "-d", "test17", "-u", "sh_customer_signup"],
+            "env": {"GEVENT_SUPPORT": "True"},
+            "console": "integratedTerminal"
+        }
+    ]
+}
+
+
