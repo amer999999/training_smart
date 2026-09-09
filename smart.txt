@@ -175,3 +175,30 @@ class Lease(models.Model):
     end_date = fields.Date(string='End Date', required=True)
     monthly_rent = fields.Float(string='Monthly Rent', required=True)
     deposit_paid = fields.Float(string='Deposit Paid')
+******************************
+from odoo import models, fields, api
+
+class MaintenanceRequest(models.Model):
+    _name = 'maintenance.request'
+    _description = 'Property Maintenance Request'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    
+    name = fields.Char(compute='_compute_name', store=True)
+    lease_id = fields.Many2one('real_estate.lease')
+    tenant_id = fields.Many2one(related='lease_id.tenant_id', store=True)
+    property_id = fields.Many2one(related='lease_id.property_id', store=True)
+    
+    issue_type = fields.Selection([
+        ('plumbing', 'Plumbing'),
+        ('electrical', 'Electrical'),
+        ('air_condition', 'Air Condition'),
+        ('appliance', 'Appliance'),
+        ('other', 'Other')
+    ], required=True)
+    description = fields.Text(required=True, tracking=True)
+    urgency = fields.Selection([
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('emergency', 'Emergency')
+    ], default='medium', required=True)
