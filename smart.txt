@@ -206,3 +206,53 @@ class MaintenanceRequest(models.Model):
     scheduled_date = fields.Date()
     completion_date = fields.Date()
     actual_cost = fields.Float()
+*******************************************
+property_views.xml
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Property List View (Tree) -->
+    <record id="view_property_tree" model="ir.ui.view">
+        <field name="name">real_estate.property.tree</field>
+        <field name="model">real_estate.property</field>
+        <field name="arch" type="xml">
+            <tree string="Properties">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Property Action (Links views together) -->
+    <record id="action_property" model="ir.actions.act_window">
+        <field name="name">Properties</field>
+        <field name="res_model">real_estate.property</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_property_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first property
+            </p>
+        </field>
+    </record>
+</odoo>
+*******************************************
+menu.xml
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu (Top Level) -->
+    <menuitem id="menu_real_estate_root"
+              name="Real Estate"
+              sequence="10"/>
+
+    <!-- Properties Menu -->
+    <menuitem id="menu_property"
+              name="Properties"
+              parent="menu_real_estate_root"
+              action="action_property"
+              sequence="10"/>
+</odoo>
+************************************************
+        'views/menu.xml',
+        'views/property_views.xml',
+
+
+
