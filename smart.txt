@@ -226,7 +226,6 @@ property_views.xml
         <field name="name">Properties</field>
         <field name="res_model">real_estate.property</field>
         <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="view_property_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first property
