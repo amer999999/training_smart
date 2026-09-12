@@ -289,6 +289,13 @@ access_property_manager,property.manager,model_real_estate_property,,1,1,1,1
             </form>
         </field>
     </record>
+************************
+    property_type = fields.Selection([
+        ('apartment', 'Apartment'),
+        ('house', 'House'),
+        ('villa', 'Villa'),
+        ('commercial', 'Commercial'),
+    ], string='Property Type', required=True)
 
 
 
