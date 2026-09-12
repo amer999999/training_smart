@@ -253,7 +253,42 @@ menu.xml
         'views/menu.xml',
         'views/property_views.xml',
 ************************************************
-access_property_manager,property.manager,model_real_estate_property,group_property_manager,1,1,1,1
+access_property_manager,property.manager,model_real_estate_property,,1,1,1,1
+************************************************
+    <!-- Property Form View -->
+    <record id="view_property_form" model="ir.ui.view">
+        <field name="name">real_estate.property.form</field>
+        <field name="model">real_estate.property</field>
+        <field name="arch" type="xml">
+            <form string="Property">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Property Name"/>
+                        </h1>
+                    </div>
+                    <group string="Property Details">
+                        <group>
+                            <field name="available"/>
+                        </group>
+                        <group>
+                            <field name="price"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="bedrooms"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
 
 
