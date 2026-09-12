@@ -252,6 +252,8 @@ menu.xml
 ************************************************
         'views/menu.xml',
         'views/property_views.xml',
+************************************************
+access_property_manager,property.manager,model_real_estate_property,group_property_manager,1,1,1,1
 
 
 
