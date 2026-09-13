@@ -296,6 +296,13 @@ access_property_manager,property.manager,model_real_estate_property,,1,1,1,1
         ('villa', 'Villa'),
         ('commercial', 'Commercial'),
     ], string='Property Type', required=True)
+*********************************************
+                <header>
+                    <button name="mark_as_occupied" string="Mark as Occupied" type="object" invisible="not available" class="oe_highlight"/>
+                    <button name="mark_as_available" string="Mark as Available" type="object" invisible="available" class="oe_highlight"/>
+                    <field name="available" invisible="1"/>                   
+                </header>
+
 
 
 
