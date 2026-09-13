@@ -302,6 +302,17 @@ access_property_manager,property.manager,model_real_estate_property,,1,1,1,1
                     <button name="mark_as_available" string="Mark as Available" type="object" invisible="available" class="oe_highlight"/>
                     <field name="available" invisible="1"/>                   
                 </header>
+************************
+    def mark_as_occupied(self):
+        """Mark property as no longer available"""
+        for record in self:
+            record.write({'available': False, 'price': record.price + 1000})
+    
+    def mark_as_available(self):
+        """Mark property as available"""
+        for record in self:
+            record.write({'available': True})
+
 
 
 
