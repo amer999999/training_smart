@@ -359,6 +359,12 @@ access_property_manager,property.manager,model_real_estate_property,,1,1,1,1
         </field>
     </record>
 **************************************
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Type" name="group_by_type" context="{'group_by': 'property_type'}"/>
+                    <filter string="Availability" name="group_by_availability" context="{'group_by': 'available'}"/>
+                </group>
+
 
 
 
