@@ -364,6 +364,14 @@ access_property_manager,property.manager,model_real_estate_property,,1,1,1,1
                     <filter string="Type" name="group_by_type" context="{'group_by': 'property_type'}"/>
                     <filter string="Availability" name="group_by_availability" context="{'group_by': 'available'}"/>
                 </group>
+*************************************
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('at_risk', 'At Risk'),
+        ('expired', 'Expired'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', required=True)
 
 
 
