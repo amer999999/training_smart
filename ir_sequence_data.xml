@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_real_estate_lease" model="ir.sequence">
+            <field name="name">Real Estate Lease</field>
+            <field name="code">real_estate.lease</field>
+            <field name="prefix">LEASE/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_maintenance_request" model="ir.sequence">
+            <field name="name">Maintenance Request</field>
+            <field name="code">maintenance.request.sequence</field>
+            <field name="prefix">MNT/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- <record id="seq_lease_payment" model="ir.sequence">
+            <field name="name">Lease Payment</field>
+            <field name="code">lease.payment</field>
+            <field name="prefix">PMT/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record> -->
+
+    </data>
+</odoo>
