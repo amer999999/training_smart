@@ -372,6 +372,37 @@ access_property_manager,property.manager,model_real_estate_property,,1,1,1,1
         ('expired', 'Expired'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', required=True)
+*************************************
+from odoo import models, fields
+
+class CrmLead(models.Model):
+    _inherit = 'crm.lead'
+
+    property_type = fields.Selection([
+        ('apartment', 'Apartment'),
+        ('house', 'House'),
+        ('villa', 'Villa'),
+        ('commercial', 'Commercial'),
+    ], string='Property Type', required=True) 
+****************************************
+<odoo>
+
+    <record id="crm_lead_view_form_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="property_type"/>
+            </xpath>
+            <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="string">sales man</attribute>
+            </xpath>            
+        </field>
+    </record>
+    
+
+</odoo>
 
 
 
