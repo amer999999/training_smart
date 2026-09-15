@@ -414,7 +414,8 @@ class CrmLead(models.Model):
             raise UserError("Expected Revenue must be greater than 5000")
         # vals['description'] = self.name
         return super(CrmLead, self).write(vals)
-
+*****************************
+decoration-info="property_type == 'apartment'" decoration-warning="property_type == 'villa'"
 
 
 
