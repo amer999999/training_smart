@@ -416,6 +416,14 @@ class CrmLead(models.Model):
         return super(CrmLead, self).write(vals)
 *****************************
 decoration-info="property_type == 'apartment'" decoration-warning="property_type == 'villa'"
+decoration-bf: bold font
+decoration-it: italic
+decoration-danger: red background
+decoration-warning: orange/yellow background
+decoration-info: light blue background
+decoration-success: green background
+decoration-muted: dimmed text
+
 
 
 
