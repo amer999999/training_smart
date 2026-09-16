@@ -443,6 +443,10 @@ decoration-muted: dimmed text
     <record id="group_tenant" model="res.groups">
         <field name="name">Tenant</field>
     </record>
+
+    <record id="group_tenant_manager" model="res.groups">
+        <field name="name">Tenant Manager</field>
+    </record>
 ************************************
 
 
