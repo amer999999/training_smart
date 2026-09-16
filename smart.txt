@@ -488,6 +488,8 @@ decoration-muted: dimmed text
     </record>    
 </odoo>
 **********************************
+groups="real_estate.group_property_manager"
+
 
 
 
