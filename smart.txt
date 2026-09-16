@@ -489,7 +489,7 @@ decoration-muted: dimmed text
 </odoo>
 **********************************
 groups="real_estate.group_property_manager"
-
+user_id = fields.Many2one('res.users', string='Related User', index=True)
 
 
 
