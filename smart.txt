@@ -448,6 +448,46 @@ decoration-muted: dimmed text
         <field name="name">Tenant Manager</field>
     </record>
 ************************************
+<odoo>
+    <record id="group_agent" model="res.groups">
+        <field name="name">Real Estate Agent</field>
+    </record>
+    
+    <record id="group_property_manager" model="res.groups">
+        <field name="name">Property Manager</field>
+        <field name="implied_ids" eval="[(4, ref('group_agent'))]"/>
+    </record>
+    
+    <record id="group_tenant" model="res.groups">
+        <field name="name">Tenant</field>
+    </record>
+
+    <record id="group_tenant_manager" model="res.groups">
+        <field name="name">Tenant Manager</field>
+    </record>
+
+    <record id="property_agent_rule" model="ir.rule">
+        <field name="name">Agent: Own Properties Only</field>
+        <field name="model_id" ref="model_real_estate_property"/>
+        <field name="domain_force">[('agent_id', '=', user.id)]</field> 
+        <field name="groups" eval="[(4, ref('group_agent'))]"/>
+    </record>
+    
+    <!-- <record id="property_tenant_rule" model="ir.rule">
+        <field name="name">Tenant: Leased Properties Only</field>
+        <field name="model_id" ref="model_real_estate_property"/>
+        <field name="domain_force">[('lease_ids.tenant_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_tenant'))]"/>
+    </record> -->
+
+    <record id="property_manager_rule" model="ir.rule">
+        <field name="name">Manager: All Properties</field>
+        <field name="model_id" ref="model_real_estate_property"/>
+        <field name="domain_force">[]</field>
+        <field name="groups" eval="[(4, ref('group_property_manager'))]"/>
+    </record>    
+</odoo>
+**********************************
 
 
 
