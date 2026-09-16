@@ -490,6 +490,7 @@ decoration-muted: dimmed text
 **********************************
 groups="real_estate.group_property_manager"
 user_id = fields.Many2one('res.users', string='Related User', index=True)
+if not self.env.user.has_group('real_estate.group_property_manager'):
 
 
 
