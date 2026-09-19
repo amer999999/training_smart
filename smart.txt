@@ -491,7 +491,154 @@ decoration-muted: dimmed text
 groups="real_estate.group_property_manager"
 user_id = fields.Many2one('res.users', string='Related User', index=True)
 if not self.env.user.has_group('real_estate.group_property_manager'):
+*********************************
+                    <button name="%(real_estate.action_maintenance_request_wizard)d" string="Maintenance Request" type="action" context="{'default_lease_id': active_id}" invisible="state != 'active'"/>
+********************************************
+maintenance.py
+from odoo import models, fields, api
 
+class MaintenanceRequestWizard(models.TransientModel):
+    _name = 'maintenance.request.wizard'
+    _description = 'Maintenance Request Wizard'
+    
+    lease_id = fields.Many2one('real_estate.lease', required=True)
+    property_id = fields.Many2one('real_estate.property', related='lease_id.property_id', readonly=True)
+    
+    issue_type = fields.Selection([
+        ('plumbing', 'Plumbing'),
+        ('electrical', 'Electrical'),
+        ('air_condition', 'Air Condition'),
+        ('appliance', 'Appliance'),
+        ('other', 'Other')
+    ], required=True)
+    
+    description = fields.Text(required=True)
+    urgency = fields.Selection([
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+        ('emergency', 'Emergency')
+    ], default='medium', required=True)
+    
+    preferred_date = fields.Date()
+    tenant_phone = fields.Char()
+    
+    def action_submit_request(self):
+        """Create maintenance request and notify manager"""
+        self.ensure_one()
+        
+        # 1. Create maintenance.request record
+        maintenance_request = self.env['maintenance.request'].create({
+            'property_id': self.property_id.id,
+            'lease_id': self.lease_id.id,
+            'issue_type': self.issue_type,
+            'description': self.description,
+            'urgency': self.urgency,
+            'preferred_date': self.preferred_date,
+            'tenant_phone': self.tenant_phone,
+            'state': 'submitted',
+        })
+        
+        # 2. Send notification to property manager (Agent)
+        # if self.property_id.agent_id:
+        #     maintenance_request.activity_schedule(
+        #         'mail.mail_activity_data_todo',
+        #         user_id=self.property_id.agent_id.id,
+        #         summary=f"New {self.issue_type.capitalize()} Maintenance Request",
+        #         note=f"Urgency: {self.urgency}\nDescription: {self.description}"
+        #     )
+        
+        # 3. Return action to close wizard and show confirmation
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Request Submitted',
+                'message': 'Your maintenance request has been submitted successfully and the manager has been notified.',
+                'type': 'success',
+                'sticky': False,
+                'next': {'type': 'ir.actions.act_window_close'},
+            },
+        }
+********************************************
+maintenance.xml
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wizard View -->
+    <record id="view_maintenance_request_wizard_form" model="ir.ui.view">
+        <field name="name">maintenance.request.wizard.form</field>
+        <field name="model">maintenance.request.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Maintenance Request">
+                <group>
+                    <group>
+                        <field name="lease_id" readonly="1"/>
+                        <field name="property_id"/>
+                    </group>
+                    <group>
+                        <field name="issue_type"/>
+                        <field name="urgency"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="preferred_date"/>
+                    </group>
+                    <group>
+                        <field name="tenant_phone"/>
+                    </group>
+                </group>
+                <group string="Description of Issue">
+                    <field name="description" placeholder="Describe the issue in detail..."/>
+                </group>
+                <footer>
+                    <button name="action_submit_request" string="Submit Request" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_maintenance_request_wizard" model="ir.actions.act_window">
+        <field name="name">Maintenance Request</field>
+        <field name="res_model">maintenance.request.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Bulk Assign Wizard View -->
+    <!-- <record id="view_maintenance_bulk_assign_wizard_form" model="ir.ui.view">
+        <field name="name">maintenance.bulk.assign.wizard.form</field>
+        <field name="model">maintenance.bulk.assign.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Bulk Assign Maintenance Requests">
+                <group>
+                    <field name="request_ids" widget="many2many_tags" readonly="1"/>
+                    <field name="assigned_to"/>
+                    <field name="scheduled_date"/>
+                </group>
+                <footer>
+                    <button name="action_assign" string="Assign All" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record> -->
+
+    <!-- Bulk Assign Action (Action Menu) -->
+    <!-- <record id="action_maintenance_bulk_assign" model="ir.actions.act_window">
+        <field name="name">Bulk Assign</field>
+        <field name="res_model">maintenance.bulk.assign.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_maintenance_request"/>
+        <field name="binding_view_types">list</field>
+        <field name="context">{'default_request_ids': active_ids}</field>
+    </record> -->
+
+
+</odoo>
 
 
 
