@@ -648,7 +648,19 @@ maintenance.xml
             'views': [(False, 'form')],
             'target': 'current',
         }
+****************************
+lease_ids = fields.One2many('real_estate.lease', 'property_id', string='Leases') 
 
+                        <page string="Leases">
+                            <field name="lease_ids">
+                                <tree create="false">
+                                    <field name="name"/>
+                                    <field name="tenant_id"/>
+                                    <field name="start_date"/>
+                                    <field name="end_date"/>
+                                </tree>
+                            </field>                                
+                        </page>
 
 
 
