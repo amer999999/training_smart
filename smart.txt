@@ -639,6 +639,15 @@ maintenance.xml
 
 
 </odoo>
+****************************
+        # 4. Opening a Created Record
+            return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'maintenance.request',
+            'res_id': maintenance_request.id,
+            'views': [(False, 'form')],
+            'target': 'current',
+        }
 
 
 
