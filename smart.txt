@@ -692,6 +692,29 @@ lease_ids = fields.One2many('real_estate.lease', 'property_id', string='Leases')
             raise ValidationError("The selected property is not available.")
         if self.property_id and self.property_id.price:
             self.monthly_rent = self.property_id.price
+*******************************
+    total_cost = fields.Float(compute='_compute_total_cost', string='Total Cost')
+
+    @api.depends('maintenance_ids.actual_cost')
+    def _compute_total_cost(self):
+        for lease in self:
+            # 1
+            # lease.total_cost = sum(maintenance.actual_cost for maintenance in lease.maintenance_ids)
+
+            # 2
+            # lease.total_cost = 0
+            # total_cost = 0
+            # for maintenance in lease.maintenance_ids:
+            #     if maintenance.actual_cost:
+            #         total_cost += maintenance.actual_cost
+            # lease.total_cost = total_cost   
+
+            # 3
+            lease_maintenance_ids = self.env['maintenance.request'].search([('lease_id', '=', lease.id)])  
+            for maintenance in lease_maintenance_ids:
+                if maintenance.actual_cost:
+                    lease.total_cost += maintenance.actual_cost
+
 
 
 
