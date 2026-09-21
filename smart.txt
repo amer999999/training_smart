@@ -685,6 +685,14 @@ lease_ids = fields.One2many('real_estate.lease', 'property_id', string='Leases')
             else:
                 record.is_active = False
 *********************************
+    @api.onchange('property_id')
+    def _onchange_property_id(self):
+        """Set default price when property is selected and validate availability"""
+        if self.property_id and not self.property_id.available:
+            raise ValidationError("The selected property is not available.")
+        if self.property_id and self.property_id.price:
+            self.monthly_rent = self.property_id.price
+
 
 
 
