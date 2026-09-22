@@ -754,80 +754,30 @@ class LeasePayment(models.Model):
     ], default='draft', required=True, tracking=True)
     
     notes = fields.Text(string='Notes')from odoo import models, fields, api
-from odoo.exceptions import UserError
-from datetime import timedelta
+********************************
+    def _cron_auto_expire_leases(self):
+        """Scheduled action - expire leases whose end date has passed"""
+        today = fields.Date.today()
+        expired_leases = self.search([
+            ('end_date', '<', today),
+        ])
+        for lease in expired_leases:
+            lease.write({'state': 'expired'})
+***********************************
+    <record id="ir_cron_auto_expire_leases" model="ir.cron">
+        <field name="name">Real Estate: Auto Expire Leases</field>
+        <field name="model_id" ref="model_real_estate_lease"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_auto_expire_leases()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="True"/>
+    </record>
+******************************
 
-class LeasePayment(models.Model):
-    _name = 'lease.payment'
-    _description = 'Lease Payment'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'due_date desc, id desc'
-    
-    name = fields.Char(string='Payment Reference', required=True, copy=False, readonly=True, default='New')
-    lease_id = fields.Many2one('real_estate.lease', string='Lease', required=True, ondelete='cascade')
-    tenant_id = fields.Many2one(related='lease_id.tenant_id', string='Tenant', store=True)
-    property_id = fields.Many2one(related='lease_id.property_id', string='Property', store=True)
-    
-    due_date = fields.Date(string='Due Date', required=True, tracking=True)
-    amount = fields.Float(string='Amount Due', required=True, tracking=True)
-    late_fee = fields.Float(string='Late Fee', tracking=True)
-    late_fee_applied = fields.Boolean(string='Late Fee Applied', default=False)
-    total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True)
-    
-    payment_date = fields.Date(string='Payment Date', tracking=True)
-    payment_method = fields.Selection([
-        ('cash', 'Cash'),
-        ('check', 'Check'),
-        ('bank_transfer', 'Bank Transfer'),
-        ('credit_card', 'Credit Card'),
-        ('other', 'Other')
-    ], string='Payment Method')
-    
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('pending', 'Pending'),
-        ('paid', 'Paid'),
-        ('reconciled', 'Reconciled')
-    ], default='draft', required=True, tracking=True)
-    
-    notes = fields.Text(string='Notes')from odoo import models, fields, api
-from odoo.exceptions import UserError
-from datetime import timedelta
 
-class LeasePayment(models.Model):
-    _name = 'lease.payment'
-    _description = 'Lease Payment'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _order = 'due_date desc, id desc'
-    
-    name = fields.Char(string='Payment Reference', required=True, copy=False, readonly=True, default='New')
-    lease_id = fields.Many2one('real_estate.lease', string='Lease', required=True, ondelete='cascade')
-    tenant_id = fields.Many2one(related='lease_id.tenant_id', string='Tenant', store=True)
-    property_id = fields.Many2one(related='lease_id.property_id', string='Property', store=True)
-    
-    due_date = fields.Date(string='Due Date', required=True, tracking=True)
-    amount = fields.Float(string='Amount Due', required=True, tracking=True)
-    late_fee = fields.Float(string='Late Fee', tracking=True)
-    late_fee_applied = fields.Boolean(string='Late Fee Applied', default=False)
-    total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True)
-    
-    payment_date = fields.Date(string='Payment Date', tracking=True)
-    payment_method = fields.Selection([
-        ('cash', 'Cash'),
-        ('check', 'Check'),
-        ('bank_transfer', 'Bank Transfer'),
-        ('credit_card', 'Credit Card'),
-        ('other', 'Other')
-    ], string='Payment Method')
-    
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('pending', 'Pending'),
-        ('paid', 'Paid'),
-        ('reconciled', 'Reconciled')
-    ], default='draft', required=True, tracking=True)
-    
-    notes = fields.Text(string='Notes')
 
 
 
