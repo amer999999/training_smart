@@ -788,6 +788,149 @@ class LeasePayment(models.Model):
     _sql_constraints = [
         ('email_unique', 'UNIQUE(email)', 'Email must be unique! This email is already registered.'),
     ]
+********************************
+portal_templates.xml
+
+    <template id="portal_my_leases" name="Tenant Portal - My Leases">
+        <t t-call="portal.portal_layout">
+            <div class="container mt16 o_portal_portlets">
+                <div class="row">
+                    <div class="col-12">
+                        <nav class="breadcrumb" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/my/home">My Account</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">My Leases</li>
+                            </ol>
+                        </nav>
+                        <h1 class="mb16">My Leases</h1>
+                        <t t-if="tenant">
+                            <p>
+                                Hello <strong><t t-esc="tenant.name"/></strong>. Below are the leases linked to your tenant account.
+                            </p>
+                        </t>
+                        <t t-else="">
+                            <div class="alert alert-warning" role="alert">
+                                No tenant record is linked to your user account. Please contact your property manager to enable portal lease access.
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <t t-if="leases">
+                    <div class="row">
+                        <t t-foreach="leases" t-as="lease">
+                            <div class="col-md-6 mb16">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-2">
+                                            <t t-esc="lease.property_id.name or lease.name"/>
+                                        </h5>
+                                        <p class="text-muted mb-2">
+                                            <strong>Lease:</strong> <t t-esc="lease.name"/>
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Property Type:</strong>
+                                            <t t-esc="lease.property_id.property_type or 'N/A'"/>
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Monthly Rent:</strong>
+                                            <t t-esc="lease.monthly_rent"/>
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Status:</strong>
+                                            <t t-esc="lease.state"/>
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Start:</strong>
+                                            <t t-esc="lease.start_date or '—'"/>
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>End:</strong>
+                                            <t t-esc="lease.end_date or '—'"/>
+                                        </p>
+                                        <t t-if="lease.property_id">
+                                            <p class="mt-2">
+                                                <a t-att-href="'/property/%d/%s' % (lease.property_id.id, lease.property_id.name and lease.property_id.name.replace(' ', '-').lower() or '')" class="btn btn-sm btn-secondary">
+                                                    View Property Details
+                                                </a>
+                                            </p>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+                <t t-if="not leases">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-info" role="alert">
+                                No leases were found for your tenant account.
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_leases_menu" name="Portal My Home: My Leases" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_service_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_service_category" position="inside">
+            <t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon" t-value="'fa fa-home'"/>
+                    <t t-set="title">My Leases</t>
+                    <t t-set="text">View your current leases and related property details.</t>
+                    <t t-set="url" t-value="'/my/leases'"/>
+                    <t t-set="config_card" t-value="True"/>
+                    <t t-set="placeholder_count" t-value="'lease_count'"/>
+                </t>
+            </t>
+        </div>
+    </template>
+*******************************
+from odoo import http
+from odoo.http import request
+from werkzeug.urls import url_quote
+from odoo.addons.portal.controllers.portal import CustomerPortal
+
+class RealEstatePortal(CustomerPortal):
+
+    def _prepare_portal_layout_values(self):
+        values = super(RealEstatePortal, self)._prepare_portal_layout_values()
+        tenant = request.env['real_estate.tenant'].sudo().search([
+            ('user_id', '=', request.env.user.id)
+        ], limit=1)
+        lease_count = 0
+        if tenant:
+            lease_count = request.env['real_estate.lease'].sudo().search_count([
+                ('tenant_id', '=', tenant.id)
+            ])
+        values.update({
+            'lease_count': lease_count,
+            'tenant': tenant,
+        })
+        return values
+
+    @http.route(['/my/leases', '/my/leases/page/<int:page>'], type='http', auth='user', website=True)
+    def portal_my_leases(self, page=1, **kw):
+        values = self._prepare_portal_layout_values()
+        tenant = values.get('tenant')
+        if not tenant:
+            values.update({
+                'leases': request.env['real_estate.lease'].sudo().browse(),
+            })
+            return request.render('real_estate.portal_my_leases', values)
+
+        leases = request.env['real_estate.lease'].sudo().search([
+            ('tenant_id', '=', tenant.id)
+        ], order='start_date desc')
+        values.update({
+            'leases': leases,
+        })
+        return request.render('real_estate.portal_my_leases', values)
 
 
 
