@@ -931,7 +931,48 @@ class RealEstatePortal(CustomerPortal):
             'leases': leases,
         })
         return request.render('real_estate.portal_my_leases', values)
+********************************************
+mail_template_data.xml
+        <record id="email_template_payment_upcoming" model="mail.template">
+            <field name="name">Lease: Upcoming Payment Reminder</field>
+            <field name="model_id" ref="real_estate.model_real_estate_lease"/>
+            <field name="subject">Upcoming Rent Payment for {{ object.property_id.name }}</field>
+            <field name="email_from">{{ (object.property_id.agent_id.email_formatted or user.email_formatted) }}</field>
+            <field name="email_to">{{ object.tenant_id.email }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        Dear <t t-out="object.tenant_id.name"/>,<br/><br/>
+                        This is a friendly reminder that your rent payment for <strong><t t-out="object.property_id.name"/></strong> 
+                        is due on <strong><t t-out="object.next_payment_date"/></strong>.<br/><br/>
+                        Amount Due: <strong><t t-out="object.monthly_rent"/></strong><br/><br/>
+                        Please ensure the payment is made by the due date to avoid any late fees.<br/><br/>
+                        Best regards,<br/>
+                        <t t-out="object.property_id.agent_id.name or 'Real Estate Management'"/>
+                    </p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
 
+    next_payment_date = fields.Date(string='Last Reminder Sent')
+    last_reminder_sent = fields.Date(string='Last Reminder Sent', readonly=True)
+
+    def send_reminder_email(self):
+        template_xml_id = 'real_estate.email_template_payment_upcoming'
+        if not template_xml_id:
+            return
+            
+        template = self.env.ref(template_xml_id, raise_if_not_found=False)
+        if not template:
+            return
+
+        for lease in self:
+            if not lease.tenant_id.email:
+                lease.message_post(body="Could not send reminder: Tenant has no email.")
+                continue
+            template.send_mail(lease.id, force_send=True)
+            lease.last_reminder_sent = fields.Date.today()
 
 
 
