@@ -973,6 +973,12 @@ mail_template_data.xml
                 continue
             template.send_mail(lease.id, force_send=True)
             lease.last_reminder_sent = fields.Date.today()
+**********************
+    specialization = fields.Selection([
+        ('residential', 'Residential'),
+        ('commercial', 'Commercial'),
+    ], string='Specialization')
+
 
 
 
