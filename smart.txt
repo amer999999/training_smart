@@ -1146,6 +1146,7 @@ class PropertyReportSummary(models.AbstractModel):
         </t>
     </template>
 ********************************************
+<field name="company_type" widget="radio" options="{'horizontal': true}"/>
 
 
 
