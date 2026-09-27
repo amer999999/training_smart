@@ -16,7 +16,7 @@ sudo apt install git wget nodejs npm python3 build-essential libzip-dev python3-
 root: wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
 root: dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
 root: apt install --fix-broken –y
-root: wkhtmltopdf –version
+root: wkhtmltopdf --version
 
 sudo su postgres
 createuser -s odoo
@@ -978,8 +978,174 @@ mail_template_data.xml
         ('residential', 'Residential'),
         ('commercial', 'Commercial'),
     ], string='Specialization')
+*******************************
+    <record id="action_report_property_summary" model="ir.actions.report">
+        <field name="name">Property Summary</field>
+        <field name="model">real_estate.property</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">real_estate.report_property_summary</field>
+        <field name="report_file">real_estate.report_property_summary</field>
+        <field name="binding_model_id" ref="model_real_estate_property"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Property Summary - %s' % (object.name)</field>
+    </record>
+
+# -*- coding: utf-8 -*-
+from odoo import api, models
+from datetime import datetime, timedelta
+
+class PropertyReportSummary(models.AbstractModel):
+    _name = 'report.real_estate.report_property_summary'
+    _description = 'Property Summary Report'
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        """
+        Override to add custom data to report context
+        """
+        properties = self.env['real_estate.property'].browse(docids)
+        
+        # Calculate occupancy rate
+        total_properties = len(properties)
+        occupied = len(properties.filtered(lambda p: not p.available))
+        occupancy_rate = (occupied / total_properties * 100) if total_properties > 0 else 0
+        
+        # Get maintenance costs for last 6 months
+        six_months_ago = datetime.now() - timedelta(days=180)
+        maintenance_costs = {}
+        
+        for prop in properties:
+            costs = self.env['maintenance.request'].search([
+                ('property_id', '=', prop.id),
+                ('completion_date', '>=', six_months_ago)
+            ])
+            maintenance_costs[prop.id] = sum(costs.mapped('actual_cost'))
+        
+        return {
+            'doc_ids': docids,
+            'doc_model': 'real_estate.property',
+            'docs': properties,
+            'occupancy_rate': occupancy_rate,
+            'maintenance_costs': maintenance_costs,
+            'report_date': datetime.now(),
+        }
+
+    <template id="report_property_summary">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Property Summary: <span t-field="o.name"/></h2>
+                        
+                        <!-- Property Details -->
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <strong>Property Type:</strong>
+                                <span t-field="o.property_type"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Status:</strong>
+                                <t t-if="o.available">
+                                    <span class="badge rounded-pill text-bg-success">Available</span>
+                                </t>
+                                <t t-else="">
+                                    <span class="badge rounded-pill text-bg-danger">Occupied</span>
+                                </t>
+                            </div>
+                        </div>
+
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <strong>Description:</strong><br/>
+                                <span t-field="o.description"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Area:</strong>
+                                <span t-field="o.square_feet"/> sqft<br/>
+                                <strong>Bedrooms:</strong>
+                                <span t-field="o.bedrooms"/><br/>
+                                <strong>Bathrooms:</strong>
+                                <span t-field="o.bathrooms"/>
+                            </div>
+                        </div>
+
+                        <!-- Pricing -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h4>Pricing Information</h4>
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td><strong>Monthly Rent:</strong></td>
+                                        <td class="text-end">
+                                            <span t-field="o.price" 
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Security Deposit:</strong></td>
+                                        <td class="text-end">
+                                            <span t-field="o.deposit_required" 
+                                                  t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Active Lease Info -->
+                        <t t-if="o.lease_ids">
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <h4>Current Lease</h4>
+                                    <t t-set="active_lease" t-value="o.lease_ids.filtered(lambda l: l.state == 'active')[:1]"/>
+                                    <t t-if="active_lease">
+                                        <table class="table table-sm">
+                                            <tr>
+                                                <td><strong>Tenant:</strong></td>
+                                                <td><span t-field="active_lease.tenant_id"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Monthly Rent:</strong></td>
+                                                <td>
+                                                    <span t-field="active_lease.monthly_rent" 
+                                                          t-options="{'widget': 'monetary', 'display_currency': active_lease.currency_id}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Start Date:</strong></td>
+                                                <td><span t-field="active_lease.start_date"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>End Date:</strong></td>
+                                                <td><span t-field="active_lease.end_date"/></td>
+                                            </tr>
+                                        </table>
+                                    </t>
+                                    <t t-else="">
+                                        <p class="text-muted">No active lease</p>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
 
 
+
+                        <!-- Footer Note -->
+                        <div class="row mt-5">
+                            <div class="col-12">
+                                <p class="text-muted">
+                                    <small>
+                                        Generated on <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+                                    </small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+********************************************
 
 
 
