@@ -1157,6 +1157,13 @@ class PropertyReportSummary(models.AbstractModel):
 
                     <button name="action_export_excel" string="Download Excel Report" type="object" class="btn-primary"/>
 
+**********************************
+    <!-- Reports Menu -->
+    <menuitem id="menu_real_estate_reports"
+              name="Reporting"
+              parent="menu_real_estate_root"
+              sequence="50"/>
+
 
 
 
