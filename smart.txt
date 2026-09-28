@@ -1148,6 +1148,17 @@ class PropertyReportSummary(models.AbstractModel):
 ********************************************
 <field name="company_type" widget="radio" options="{'horizontal': true}"/>
 
+    def action_export_excel(self):
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/real_estate/property/excel_export/{self.id}',
+            'target': 'self',
+        }
+
+                    <button name="action_export_excel" string="Download Excel Report" type="object" class="btn-primary"/>
+
+
+
 
 
 
