@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_rent_roll_wizard_form" model="ir.ui.view">
+        <field name="name">rent.roll.wizard.form</field>
+        <field name="model">rent.roll.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Rent Roll Report">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <field name="property_type"/>
+                    </group>
+                </group>
+                
+                <group invisible="not excel_file">
+                    <field name="excel_file" filename="excel_filename" readonly="1"/>
+                    <field name="excel_filename" invisible="1"/>
+                </group>
+                
+                <footer>
+                    <button string="Generate Report" 
+                            name="action_generate_report" 
+                            type="object" 
+                            class="btn-primary"
+                            invisible="excel_file != False"/>
+                    <button string="Close" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_rent_roll_wizard" model="ir.actions.act_window">
+        <field name="name">Rent Roll Report</field>
+        <field name="res_model">rent.roll.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Add to menu -->
+    <menuitem id="menu_rent_roll_report"
+              name="Rent Roll Report"
+              parent="menu_real_estate_reports"
+              action="action_rent_roll_wizard"
+              sequence="10"/>
+</odoo>
