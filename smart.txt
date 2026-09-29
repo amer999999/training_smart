@@ -1163,7 +1163,13 @@ class PropertyReportSummary(models.AbstractModel):
               name="Reporting"
               parent="menu_real_estate_root"
               sequence="50"/>
-
+*****************************************
+# Update record
+models.execute_kw(
+    'database_name', uid, 'password',
+    'res.partner', 'write',
+    [[new_partner_id], {'phone': '+1234567890'}]
+)
 
 
 
