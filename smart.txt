@@ -1170,6 +1170,51 @@ models.execute_kw(
     'res.partner', 'write',
     [[new_partner_id], {'phone': '+1234567890'}]
 )
+****************************************
+class RealEstateAPI(http.Controller):
+    
+    @http.route('/api/properties/create', type='json', auth='user', methods=['POST'], csrf=False)
+    def create_property(self, **kwargs):
+        try:
+            params = kwargs
+            print(request.env.user.name)
+            if not request.env.user.has_group('real_estate.group_property_manager'):
+                return {
+                    'status': 'error',
+                    'message': 'You do not have permission to create properties'
+                }
+            # Validate required fields
+            if not params.get('name') or not params.get('price'):
+                return {
+                    'status': 'error',
+                    'message': 'Name and price are required'
+                }
+            
+            # Create property
+            property_obj = request.env['real_estate.property'].sudo().create({
+                'name': params.get('name'),
+                'price': params.get('price'),
+                'bedrooms': params.get('bedrooms', 0),
+                'property_type': params.get('property_type', 'house'),
+                'external_id': params.get('external_id'),
+            })
+            
+            return {
+                'status': 'success',
+                'message': 'Property created successfully',
+                'data': {
+                    'property_id': property_obj.id,
+                    'name': property_obj.name,
+                    'external_id': property_obj.external_id
+                }
+            }
+            
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': str(e)
+            }
+
 
 
 
