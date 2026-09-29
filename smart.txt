@@ -1222,6 +1222,18 @@ class RealEstateAPI(http.Controller):
             }
 
 
+http://localhost:8017/api/properties/create
+
+
+{   
+    "params":{
+                "name": "Apartment from restfull api call",
+                "price": 2500,
+                "bedrooms": 2,
+                "property_type": "house",
+                "external_id": "PROP-12345" 
+            }
+}
 
 
 
