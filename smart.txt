@@ -1171,6 +1171,12 @@ models.execute_kw(
     [[new_partner_id], {'phone': '+1234567890'}]
 )
 ****************************************
+import odoo
+from odoo import http, fields
+from odoo.http import request
+import json
+from functools import wraps
+
 class RealEstateAPI(http.Controller):
     
     @http.route('/api/properties/create', type='json', auth='user', methods=['POST'], csrf=False)
