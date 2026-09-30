@@ -1331,6 +1331,11 @@ Common Status Codes
 
 http://localhost:8017/api/list_leases?date_from=2026-01-11 00:01:22&date_to=2026-12-31
 
+        TOKEN = 'cacb064fd72c08b445959768'
+        authorization_token = request.httprequest.headers.get('Authorization', '')
+        if authorization_token != f'Bearer {TOKEN}':
+            return request.make_json_response({'status': 'error', 'message': 'Unauthorized'}, status=401)
+
 
 
 
