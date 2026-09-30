@@ -1266,6 +1266,18 @@ http://localhost:8017/api/tenants/16000
   "property_type": "apartment"
 }
 
+Common Status Codes
+• 200 OK: The request worked and the server returned the requested data.
+• 201 Created: A new resource was successfully created (often after a POST request).
+• 301 Moved Permanently: The requested page has moved to a new URL for good.
+• 400 Bad Request: The server could not understand the request because of invalid syntax.
+• 401 Unauthorized: The request lacks valid authentication credentials.
+• 403 Forbidden: The server understands the request but refuses to authorize it.
+• 404 Not Found: The server cannot find the requested page or resource.
+• 429 Too Many Requests: The user sent too many requests in a given time frame (rate limiting).
+• 500 Internal Server Error: The server hit an unexpected condition that prevented it from fulfilling the request.
+• 503 Service Unavailable: The server is temporarily overloaded or down for maintenance.
+
 
 
 
