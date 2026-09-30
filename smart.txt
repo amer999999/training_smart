@@ -1234,6 +1234,38 @@ http://localhost:8017/api/properties/create
                 "external_id": "PROP-12345" 
             }
 }
+****************************
+    @http.route('/api/tenants/<int:tenant_id>', type='http', auth='public', methods=['POST'], csrf=False)
+    def update_tenant(self, tenant_id):
+        tenant_obj = request.env['real_estate.tenant'].sudo().browse(tenant_id)
+        # print(tenant_obj.name)
+        if not tenant_obj.exists():
+            return request.make_json_response(
+                {'status': 'error', 
+                 'message': 'Tenant not found'}, 
+                 status=404
+                 )
+        
+        params = request.httprequest.get_json(silent=True)
+
+        tenant_obj.write(params)
+        return request.make_json_response({'status': 'success', 
+                                           'tenant_id': tenant_obj.id}
+                                           )
+
+http://localhost:8017/api/tenants/16000
+
+{
+  "name": "Jane Tenant",
+  "email": "jane@example.com",
+  "phone": "1234567890",
+  "mobile": "0987654321",
+  "city": "Springfield",
+  "date_of_birth": "2000-05-15",
+  "notes": "Updated tenant profile",
+  "property_type": "apartment"
+}
+
 
 
 
