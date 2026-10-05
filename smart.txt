@@ -1336,6 +1336,7 @@ http://localhost:8017/api/list_leases?date_from=2026-01-11 00:01:22&date_to=2026
         if authorization_token != f'Bearer {TOKEN}':
             return request.make_json_response({'status': 'error', 'message': 'Unauthorized'}, status=401)
 ********************************
+/home/odoo/workspace/Odoo_17/venv_17/bin/python /home/odoo/workspace/Odoo_17/odoo/odoo-bin shell -d real_estate_db
 crm = env['crm.lead'].search([('id', '=', 29)])
 print(crm.name)
 crm.write({'email': 'new_email@example.com','phone': '+20 200 987 6543',})
