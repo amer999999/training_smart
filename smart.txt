@@ -1342,4 +1342,11 @@ print(crm.name)
 crm.write({'email': 'new_email@example.com','phone': '+20 200 987 6543',})
 env.cr.commit()
 
+from datetime import date 
+leases = env['real_estate.lease'].search([('state', '=', 'active'), ('end_date', '<', date.today()), ])
+for lease in leases:
+        print(f"lease name: {lease.name} will expire on: {lease.end_date}")
+
+
+
 
